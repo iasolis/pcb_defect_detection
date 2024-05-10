@@ -1,0 +1,4 @@
+PyYAML==6.0.1
+pillow==10.3.0
+matplotlib==3.8.4
+ultralytics==8.2.11
