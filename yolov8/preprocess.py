@@ -162,11 +162,11 @@ def save_anno_in_yolo_format(label: str, bndboxs: list, path_to_save: str, img_s
               'spur': 4,
               'short': 5}
     width, height = img_size
-    for bndbox in bndboxs:
-        with open(path_to_save, "w") as file:
+    with open(path_to_save, "w") as file:
+        for bndbox in bndboxs:
             xmin, ymin, xmax, ymax = bndbox
             lbl = labels[label]
-            string_to_save = f'{lbl} {(xmin+xmax)/2/width} {(ymin+ymax)/2/height} {(xmax-xmin)/width} {(ymax-ymin)/height}'
+            string_to_save = f'{lbl} {(xmin+xmax)/2/width} {(ymin+ymax)/2/height} {(xmax-xmin)/width} {(ymax-ymin)/height} \n'
             file.write(string_to_save)
 
 

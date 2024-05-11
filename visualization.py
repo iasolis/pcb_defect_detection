@@ -1,10 +1,13 @@
 import matplotlib.pyplot as plt
+from os.path import basename
 
+def plot_pcb_with_bndboxs(labels, boxes: str, img_path):
+    image_name = basename(img_path)
+    label = labels
+    orig_img_path = f'original_data/images/{label}/image_name'
 
-def plot_pcb_with_bndboxs(labels, boxes: str, image_path: str, ):
-    # image = image = plt.imread(image_path)
+    image = image = plt.imread(orig_img_path)
 
-    pass
 
     # plt.imshow(image)
     # plt.axis('off')
