@@ -21,20 +21,7 @@ def make_train_data_structure(dirs: list[str]) -> None:
         makedirs(_dir, exist_ok=True)
 
 
-def take_filepaths(data_dir: str, subdirs: list) -> list[str]:
-    """
-    Функция получения путей всех файлов.
-    Parameters
-    ----------
-    data_dir: str
-        Путь папки из оригинальных данных.
-    subdirs: list
-        Названия всех подпапок оригинальных данных.
-    Returns
-    -------
-    list[str]
-        Список всех путей до файлов
-    """
+def take_filepaths(data_dir, subdirs) -> list:
     filepaths = []
     for subdir in subdirs:
         dir_path = data_dir + subdir
@@ -47,11 +34,11 @@ def divide_train_val(img_filepaths: list[str], anno_filepaths: list[str], train_
     Разделение изображений на тренировочный, валидационный  и тренировочный датасеты.
     Parameters
     ----------
-    img_filepaths: list
+    img_filepaths:
         Путь до изображения.
-    anno_filepaths: list
+    anno_filepaths:
         Путь до аннотации изображения.
-    train_size: float
+    train_size:
         Размер тренировочного датасета в относительных еденицах, например 0.7 означает, что 70%
         изображений и аннотаций будут тренировочными.
     Returns
@@ -77,6 +64,9 @@ def divide_train_val(img_filepaths: list[str], anno_filepaths: list[str], train_
     img_val_paths.extend(imgs)
     anno_val_paths.extend(annos)
     return img_train_paths, img_val_paths, anno_train_paths, anno_val_paths
+
+
+
 
 
 def resize_img(img_path: str, target_size: int = 2240) -> Image.Image:
@@ -172,15 +162,15 @@ def save_anno_in_yolo_format(label: str, bndboxs: list, path_to_save: str, img_s
               'spur': 4,
               'short': 5}
     width, height = img_size
-    with open(path_to_save, "w") as file:
-        for bndbox in bndboxs:
+    for bndbox in bndboxs:
+        with open(path_to_save, "w") as file:
             xmin, ymin, xmax, ymax = bndbox
             lbl = labels[label]
-            string_to_save = f'{lbl} {(xmin+xmax)/2/width} {(ymin+ymax)/2/height} {(xmax-xmin)/width} {(ymax-ymin)/height} \n'
-            file.write(string_to_save )
+            string_to_save = f'{lbl} {(xmin+xmax)/2/width} {(ymin+ymax)/2/height} {(xmax-xmin)/width} {(ymax-ymin)/height}'
+            file.write(string_to_save)
 
 
-def save_yaml_yolo() -> None:
+def save_yaml_yolo():
     """
     Функция сохранения .yaml файла для модели yolo.
     """
@@ -250,7 +240,6 @@ def save_train_val_files(orig_img_train_paths: str, orig_img_val_paths: str, ori
         anno_name = splitext(basename(anno_path))[0]
         anno_save_path = val_anno_dir + anno_name + '.txt'
         save_anno_in_yolo_format(label, bndbox, anno_save_path, img_size)
-
 
 def main():
     if not exists(DATA_DIR):
