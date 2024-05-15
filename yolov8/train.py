@@ -1,4 +1,6 @@
 import argparse
+
+import ultralytics.models
 from ultralytics import YOLO
 
 
