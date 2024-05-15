@@ -25,6 +25,7 @@ class RCnnDataset(VisionDataset):
 
         image = self._load_image(image_path)
         bndboxs, labels = take_anno_params(anno_path)
+        bndboxs = [b.append(l) for b,l in zip(bndboxs, labels)]
         transformed = self.transforms(image=image, bboxes=bndboxs)
 
         image = transformed['image']
