@@ -7,13 +7,14 @@ from torch.utils.data import Dataset
 from PIL import Image
 import numpy as np
 import cv2
-
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
 
 class RCnnDataset(Dataset):
-    def __init__(self,  image_paths, anno_paths):
+    def __init__(self,  image_paths, anno_paths, transform=None):
         self.image_paths = image_paths
         self.anno_paths = anno_paths
-
+        self.transform = transform
     def __len__(self):
         return len(self.image_paths)
 
@@ -22,14 +23,13 @@ class RCnnDataset(Dataset):
         anno_path = self.anno_paths[index]
 
         image = self._load_image(image_path)
-        image = torch.tensor(image)/255
-
         bndboxs, labels = take_anno_params(anno_path)
+        transformed = self.transform(image=image, bboxes=bndboxs)
+
+        image = transformed['image']
         labels = torch.tensor(labels)
-
-        bndboxs = torch.tensor(bndboxs,  dtype=torch.float32)
+        bndboxs = transformed['bboxes']
         areas = torch.tensor([(bndbox[3] - bndbox[1]) * (bndbox[2] - bndbox[0]) for bndbox in bndboxs],  dtype=torch.float32)
-
         target = {'boxes': bndboxs,
                   'labels': labels,
                   'image_id': torch.tensor([index]),
@@ -37,11 +37,20 @@ class RCnnDataset(Dataset):
                   'iscrowd': torch.zeros(6, dtype=torch.int64)}
         return image, target
 
-    def _load_image(self, img_path: int):
+    def _load_image(self, img_path: str):
         image = cv2.imread(img_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         return image
 
+
+def get_transforms():
+    transform = A.Compose([
+        A.Resize(640, 640),
+        A.RandomBrightnessContrast(p=0.1),
+        A.ColorJitter(p=0.1),
+        ToTensorV2()
+    ], bbox_params=A.BboxParams(format='coco'))
+    return transform
 
 def divide_train_val(img_dir: str, anno_dir: str, subdirs: list, train_size: float = 0.8) -> tuple:
     """
