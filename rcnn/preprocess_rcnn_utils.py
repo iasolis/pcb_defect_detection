@@ -136,5 +136,5 @@ def take_anno_params(xml_path: str) -> tuple:
             ymin = int(box.find('ymin').text)
             xmax = int(box.find('xmax').text)
             ymax = int(box.find('ymax').text)
-            bndboxs.append((xmin, ymin, xmax, ymax))
+            bndboxs.append([xmin, ymin, xmax, ymax])
     return bndboxs, labels
