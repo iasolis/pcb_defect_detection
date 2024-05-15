@@ -3,18 +3,19 @@ from os import listdir
 import random
 
 import torch
-from torch.utils.data import Dataset
-from PIL import Image
-import numpy as np
+
+from torchvision.datasets import VisionDataset
+
 import cv2
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
-class RCnnDataset(Dataset):
-    def __init__(self,  image_paths, anno_paths, transform=None):
+class RCnnDataset(VisionDataset):
+    def __init__(self,  root, image_paths, anno_paths, transform=None, target_transform=None, transforms=None):
+        super().__init__(root, transforms, transform, target_transform)
         self.image_paths = image_paths
         self.anno_paths = anno_paths
-        self.transform = transform
+        self.transforms = transforms
     def __len__(self):
         return len(self.image_paths)
 
@@ -24,7 +25,7 @@ class RCnnDataset(Dataset):
 
         image = self._load_image(image_path)
         bndboxs, labels = take_anno_params(anno_path)
-        transformed = self.transform(image=image, bboxes=bndboxs)
+        transformed = self.transforms(image=image, bboxes=bndboxs)
 
         image = transformed['image']
         labels = torch.tensor(labels)

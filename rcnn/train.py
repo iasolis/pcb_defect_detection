@@ -69,9 +69,12 @@ def main():
     paths = divide_train_val(img_dir, anno_dir, subdirs, train_size)
     img_train_paths, img_val_paths, img_test_paths, anno_train_paths, anno_val_paths, anno_test_paths = paths
 
-    train_dataset = RCnnDataset(img_train_paths, anno_train_paths, get_transforms)
-    valid_dataset = RCnnDataset(img_val_paths, anno_val_paths, get_transforms)
-    test_dataset = RCnnDataset(img_test_paths, anno_test_paths, get_transforms)
+    train_dataset = RCnnDataset(root='/content/drive/MyDrive/VKRM/pcb_defect_detection/original_data/',
+                                image_paths=img_train_paths,
+                                anno_paths= anno_train_paths,
+                                transforms=get_transforms())
+    # valid_dataset = RCnnDataset(img_val_paths, anno_val_paths, get_transforms())
+    # test_dataset = RCnnDataset(img_test_paths, anno_test_paths, get_transforms())
 
     train_data_loader = DataLoader(train_dataset,
                                    batch_size=1,
@@ -79,11 +82,11 @@ def main():
                                    num_workers=2,
                                    collate_fn=collate_fn)
 
-    valid_data_loader = DataLoader(valid_dataset,
-                                   batch_size=1,
-                                   shuffle=False,
-                                   num_workers=2,
-                                   collate_fn=collate_fn)
+    # valid_data_loader = DataLoader(valid_dataset,
+    #                                batch_size=1,
+    #                                shuffle=False,
+    #                                num_workers=2,
+    #                                collate_fn=collate_fn)
 
     num_classes = 6
     num_epochs = 100
