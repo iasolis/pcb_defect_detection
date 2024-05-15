@@ -22,6 +22,7 @@ class RCnnDataset(Dataset):
         anno_path = self.anno_paths[index]
 
         image = self._load_image(image_path)
+        image = torch.tensor(image)/255
 
         bndboxs, labels = take_anno_params(anno_path)
         labels = torch.tensor(labels)

@@ -78,6 +78,7 @@ def main():
                                    shuffle=False,
                                    num_workers=6,
                                    collate_fn=collate_fn)
+
     valid_data_loader = DataLoader(valid_dataset,
                                    batch_size=1,
                                    shuffle=False,
