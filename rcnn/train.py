@@ -1,5 +1,5 @@
 from config_rcnn import ORIGINAL_DATA_IMG_DIR, ORIGINAL_DATA_ANNO_DIR, ORIGINAL_DATA_SUBDIRS
-from preprocess_rcnn_utils import divide_train_val, RCnnDataset
+from preprocess_rcnn_utils import divide_train_val,get_transforms, RCnnDataset
 
 import sys
 from tqdm import tqdm
@@ -69,9 +69,9 @@ def main():
     paths = divide_train_val(img_dir, anno_dir, subdirs, train_size)
     img_train_paths, img_val_paths, img_test_paths, anno_train_paths, anno_val_paths, anno_test_paths = paths
 
-    train_dataset = RCnnDataset(img_train_paths, anno_train_paths)
-    valid_dataset = RCnnDataset(img_val_paths, anno_val_paths)
-    test_dataset = RCnnDataset(img_test_paths, anno_test_paths)
+    train_dataset = RCnnDataset(img_train_paths, anno_train_paths, get_transforms)
+    valid_dataset = RCnnDataset(img_val_paths, anno_val_paths, get_transforms)
+    test_dataset = RCnnDataset(img_test_paths, anno_test_paths, get_transforms)
 
     train_data_loader = DataLoader(train_dataset,
                                    batch_size=1,
