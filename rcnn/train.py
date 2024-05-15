@@ -76,13 +76,13 @@ def main():
     train_data_loader = DataLoader(train_dataset,
                                    batch_size=1,
                                    shuffle=False,
-                                   num_workers=6,
+                                   num_workers=2,
                                    collate_fn=collate_fn)
 
     valid_data_loader = DataLoader(valid_dataset,
                                    batch_size=1,
                                    shuffle=False,
-                                   num_workers=6,
+                                   num_workers=2,
                                    collate_fn=collate_fn)
 
     num_classes = 6
