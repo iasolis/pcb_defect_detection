@@ -132,6 +132,8 @@ def take_anno_params(xml_path: str) -> tuple:
 
     width = root.find('size').find('width').text
     height = root.find('size').find('height').text
+    img_size = (int(width), int(height))
+
 
     labels = []
     bndboxs = []
@@ -144,10 +146,10 @@ def take_anno_params(xml_path: str) -> tuple:
             xmax = int(box.find('xmax').text)
             ymax = int(box.find('ymax').text)
             bndboxs.append([xmin, ymin, xmax, ymax])
-    return bndboxs, labels, (width, height)
+    return bndboxs, labels, img_size
 
 
-def resize_anno_params(bndboxs: list[tuple], old_img_size: tuple, target_size: int = 640) -> tuple[list, tuple]:
+def resize_anno_params(bndboxs: list[list], old_img_size: tuple, target_size: int = 640) -> tuple[list, tuple]:
     """
     Функция для изменения параметров избражения в аннотации, а именно: разрешения изображения и координат ограничивающей рамки
     Parameters
