@@ -16,7 +16,8 @@ import pandas as pd
 def collate_fn(batch):
     return tuple(zip(*batch))
 
-def train_one_epoch(model, optimizer,lr_scheduler, loader, device, epoch):
+
+def train_one_epoch(model, optimizer, lr_scheduler, loader, device, epoch):
     model.to(device)
     model.train()
 
@@ -24,11 +25,10 @@ def train_one_epoch(model, optimizer,lr_scheduler, loader, device, epoch):
     all_losses_dict = []
 
     for images, targets in tqdm(loader):
-        # print(images)
-        print(targets)
+        # print(targets)
+        images = (torch.permute(images[0], (2, 0, 1)),)
         images = list(image.to(device) for image in images)
         targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
-
         loss_dict = model(images, targets)  # the model computes the loss automatically if we pass in targets
         losses = sum(loss for loss in loss_dict.values())
         loss_dict_append = {k: v.item() for k, v in loss_dict.items()}
@@ -59,6 +59,7 @@ def train_one_epoch(model, optimizer,lr_scheduler, loader, device, epoch):
             all_losses_dict['loss_objectness'].mean()
         ))
 
+
 def main():
     img_dir = ORIGINAL_DATA_IMG_DIR
     anno_dir = ORIGINAL_DATA_ANNO_DIR
@@ -71,10 +72,9 @@ def main():
 
     train_dataset = RCnnDataset(root='/content/drive/MyDrive/VKRM/pcb_defect_detection/original_data/',
                                 image_paths=img_train_paths,
-                                anno_paths= anno_train_paths)
+                                anno_paths=anno_train_paths)
     # valid_dataset = RCnnDataset(img_val_paths, anno_val_paths, get_transforms())
     # test_dataset = RCnnDataset(img_test_paths, anno_test_paths, get_transforms())
-
     train_data_loader = DataLoader(train_dataset,
                                    batch_size=1,
                                    shuffle=False,
@@ -101,7 +101,7 @@ def main():
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
 
     for epoch in range(num_epochs):
-        train_one_epoch(model, optimizer,lr_scheduler, train_data_loader, device, epoch)
+        train_one_epoch(model, optimizer, lr_scheduler, train_data_loader, device, epoch)
 
 
 if __name__ == '__main__':

@@ -9,11 +9,12 @@ import cv2
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
-class RCnnDataset(Dataset):
-    def __init__(self,  root, image_paths, anno_paths):
 
+class RCnnDataset(Dataset):
+    def __init__(self, root, image_paths, anno_paths):
         self.image_paths = image_paths
         self.anno_paths = anno_paths
+
     def __len__(self):
         return len(self.image_paths)
 
@@ -23,7 +24,7 @@ class RCnnDataset(Dataset):
 
         image = self._load_image(image_path)
         bndboxs, labels, img_size = take_anno_params(anno_path)
-        bndboxs, img_size = resize_anno_params(bndboxs, img_size, 640)
+        # bndboxs, img_size = resize_anno_params(bndboxs, img_size, 640)
 
         image = torch.tensor(image)
         bndboxs = torch.tensor(bndboxs)
@@ -47,6 +48,7 @@ def get_transform():
     return A.Compose([
         ToTensorV2(p=1.0)
     ], bbox_params={'format': 'pascal_voc', 'label_fields': ['labels']})
+
 
 def divide_train_val(img_dir: str, anno_dir: str, subdirs: list, train_size: float = 0.8) -> tuple:
     """
@@ -123,7 +125,6 @@ def take_anno_params(xml_path: str) -> tuple:
     width = root.find('size').find('width').text
     height = root.find('size').find('height').text
     img_size = (int(width), int(height))
-
 
     labels = []
     bndboxs = []
