@@ -24,10 +24,10 @@ class RCnnDataset(Dataset):
         bndboxs, labels, img_size = take_anno_params(anno_path)
         bndboxs, img_size = resize_anno_params(bndboxs, img_size, 640)
 
-        labels = torch.tensor(labels)
+        image = torch.tensor(image)
         bndboxs = torch.tensor(bndboxs)
-
-        areas = torch.tensor([(bndbox[3] - bndbox[1]) * (bndbox[2] - bndbox[0]) for bndbox in bndboxs],  dtype=torch.float32)
+        labels = torch.tensor(labels)
+        areas = torch.tensor([(bndbox[3] - bndbox[1]) * (bndbox[2] - bndbox[0]) for bndbox in bndboxs])
         target = {'boxes': bndboxs,
                   'labels': labels,
                   'image_id': torch.tensor([index]),
