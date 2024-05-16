@@ -71,8 +71,7 @@ def main():
 
     train_dataset = RCnnDataset(root='/content/drive/MyDrive/VKRM/pcb_defect_detection/original_data/',
                                 image_paths=img_train_paths,
-                                anno_paths= anno_train_paths,
-                                transform=get_transform())
+                                anno_paths= anno_train_paths)
     # valid_dataset = RCnnDataset(img_val_paths, anno_val_paths, get_transforms())
     # test_dataset = RCnnDataset(img_test_paths, anno_test_paths, get_transforms())
 

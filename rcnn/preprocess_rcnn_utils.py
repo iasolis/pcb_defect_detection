@@ -9,11 +9,10 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
 class RCnnDataset(Dataset):
-    def __init__(self,  root, image_paths, anno_paths, transform=None):
+    def __init__(self,  root, image_paths, anno_paths):
 
         self.image_paths = image_paths
         self.anno_paths = anno_paths
-        self.transform = transform
     def __len__(self):
         return len(self.image_paths)
 
@@ -25,16 +24,8 @@ class RCnnDataset(Dataset):
         bndboxs, labels, img_size = take_anno_params(anno_path)
         bndboxs, img_size = resize_anno_params(bndboxs, img_size, 640)
 
-        if self.transform:
-            sample = {
-                'image': image,
-                'bboxes': bndboxs,
-                'labels': labels}
-
-            sample = self.transform(**sample)
-            image = sample['image']
-            bndboxs = sample['bboxes']
-            labels = sample['labels']
+        labels = torch.tensor(labels)
+        bndboxs = torch.tensor(bndboxs)
 
         areas = torch.tensor([(bndbox[3] - bndbox[1]) * (bndbox[2] - bndbox[0]) for bndbox in bndboxs],  dtype=torch.float32)
         target = {'boxes': bndboxs,
