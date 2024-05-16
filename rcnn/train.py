@@ -1,5 +1,5 @@
 from config_rcnn import ORIGINAL_DATA_IMG_DIR, ORIGINAL_DATA_ANNO_DIR, ORIGINAL_DATA_SUBDIRS
-from preprocess_rcnn_utils import divide_train_val,get_transforms, RCnnDataset
+from preprocess_rcnn_utils import divide_train_val, get_transform, RCnnDataset
 
 import sys
 from tqdm import tqdm
@@ -72,7 +72,7 @@ def main():
     train_dataset = RCnnDataset(root='/content/drive/MyDrive/VKRM/pcb_defect_detection/original_data/',
                                 image_paths=img_train_paths,
                                 anno_paths= anno_train_paths,
-                                transforms=get_transforms())
+                                transform=get_transform())
     # valid_dataset = RCnnDataset(img_val_paths, anno_val_paths, get_transforms())
     # test_dataset = RCnnDataset(img_test_paths, anno_test_paths, get_transforms())
 
