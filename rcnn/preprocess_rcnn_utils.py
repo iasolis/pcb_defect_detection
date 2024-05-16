@@ -45,8 +45,9 @@ class RCnnDataset(Dataset):
         return image, target
 
     def _load_image(self, img_path: str):
-        image = cv2.imread(img_path)
+        image = cv2.imread(img_path, cv2.IMREAD_COLOR)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image /= 255.0
         return image
 
 
