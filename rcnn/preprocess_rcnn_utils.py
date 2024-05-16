@@ -25,9 +25,6 @@ class RCnnDataset(Dataset):
         bndboxs, labels, img_size = take_anno_params(anno_path)
         bndboxs, img_size = resize_anno_params(bndboxs, img_size, 640)
 
-        for box, lbl in zip(bndboxs, labels):
-            box.append(lbl)
-
         if self.transform:
             sample = {
                 'image': image,
