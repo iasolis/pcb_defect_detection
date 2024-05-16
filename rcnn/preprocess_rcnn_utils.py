@@ -24,8 +24,12 @@ class RCnnDataset(VisionDataset):
         anno_path = self.anno_paths[index]
 
         image = self._load_image(image_path)
-        bndboxs, labels = take_anno_params(anno_path)
-        bndboxs = [b.append(l) for b,l in zip(bndboxs, labels)]
+        bndboxs, labels, img_size = take_anno_params(anno_path)
+        bndboxs, img_size = resize_anno_params(bndboxs, img_size, 640)
+
+        for box, lbl in zip(bndboxs, labels):
+            box.append(lbl)
+
         transformed = self.transforms(image=image, bboxes=bndboxs)
 
         image = transformed['image']
@@ -126,6 +130,9 @@ def take_anno_params(xml_path: str) -> tuple:
     tree = ET.parse(xml_path)
     root = tree.getroot()
 
+    width = root.find('size').find('width').text
+    height = root.find('size').find('height').text
+
     labels = []
     bndboxs = []
     for obj in root.iter('object'):
@@ -137,4 +144,35 @@ def take_anno_params(xml_path: str) -> tuple:
             xmax = int(box.find('xmax').text)
             ymax = int(box.find('ymax').text)
             bndboxs.append([xmin, ymin, xmax, ymax])
-    return bndboxs, labels
+    return bndboxs, labels, (width, height)
+
+
+def resize_anno_params(bndboxs: list[tuple], old_img_size: tuple, target_size: int = 640) -> tuple[list, tuple]:
+    """
+    Функция для изменения параметров избражения в аннотации, а именно: разрешения изображения и координат ограничивающей рамки
+    Parameters
+    ----------
+    bndboxs: list
+        Координаты ограничивающей рамки (xmin, ymin, xmax, ymax)
+    old_img_size: tuple
+        Разрмер изначального изображения (width, height)
+    target_size: int
+        Конечный размер изображения
+    Returns
+    -------
+    tuple[list, tuple]
+        Два кортежа, первый содержит измененные координаты изображения, а второй размеры
+    """
+    resized_size = (target_size, target_size)
+    resized_bndboxs = []
+    for bndbox in bndboxs:
+        xmin, ymin, xmax, ymax = bndbox
+        old_width, old_height = old_img_size
+
+        xmin = float(xmin * target_size / old_width)
+        ymin = float(ymin * target_size / old_height)
+        xmax = float(xmax * target_size / old_width)
+        ymax = float(ymax * target_size / old_height)
+
+        resized_bndboxs.append((xmin, ymin, xmax, ymax))
+    return resized_bndboxs, resized_size
