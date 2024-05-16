@@ -25,7 +25,7 @@ def train_one_epoch(model, optimizer,lr_scheduler, loader, device, epoch):
 
     for images, targets in tqdm(loader):
         # print(images)
-        # print(targets)
+        print(targets)
         images = list(image.to(device) for image in images)
         targets = [{k: torch.tensor(v).to(device) for k, v in t.items()} for t in targets]
 
