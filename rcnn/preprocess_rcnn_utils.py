@@ -3,19 +3,17 @@ from os import listdir
 import random
 
 import torch
-
-from torchvision.datasets import VisionDataset
-
+from torch.utils.data import Dataset
 import cv2
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
-class RCnnDataset(VisionDataset):
-    def __init__(self,  root, image_paths, anno_paths, transform=None, target_transform=None, transforms=None):
-        super().__init__(root, transforms, transform, target_transform)
+class RCnnDataset(Dataset):
+    def __init__(self,  root, image_paths, anno_paths, transform=None):
+
         self.image_paths = image_paths
         self.anno_paths = anno_paths
-        self.transforms = transforms
+        self.transform = transform
     def __len__(self):
         return len(self.image_paths)
 
@@ -30,11 +28,17 @@ class RCnnDataset(VisionDataset):
         for box, lbl in zip(bndboxs, labels):
             box.append(lbl)
 
-        transformed = self.transforms(image=image, bboxes=bndboxs)
+        if self.transform:
+            sample = {
+                'image': image,
+                'bboxes': bndboxs,
+                'labels': labels}
 
-        image = transformed['image']
+            sample = self.transform(**sample)
+            image = sample['image']
+            bndboxs = sample['bboxes']
+
         labels = torch.tensor(labels)
-        bndboxs = transformed['bboxes']
         areas = torch.tensor([(bndbox[3] - bndbox[1]) * (bndbox[2] - bndbox[0]) for bndbox in bndboxs],  dtype=torch.float32)
         target = {'boxes': bndboxs,
                   'labels': labels,
@@ -49,14 +53,10 @@ class RCnnDataset(VisionDataset):
         return image
 
 
-def get_transforms():
-    transform = A.Compose([
-        A.Resize(640, 640),
-        A.RandomBrightnessContrast(p=0.1),
-        A.ColorJitter(p=0.1),
-        ToTensorV2()
-    ], bbox_params=A.BboxParams(format='coco'))
-    return transform
+def get_transform():
+    return A.Compose([
+        ToTensorV2(p=1.0)
+    ], bbox_params={'format': 'pascal_voc', 'label_fields': ['labels']})
 
 def divide_train_val(img_dir: str, anno_dir: str, subdirs: list, train_size: float = 0.8) -> tuple:
     """
