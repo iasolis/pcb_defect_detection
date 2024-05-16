@@ -34,8 +34,8 @@ class RCnnDataset(Dataset):
             sample = self.transform(**sample)
             image = sample['image']
             bndboxs = sample['bboxes']
+            labels = sample['labels']
 
-        labels = torch.tensor(labels)
         areas = torch.tensor([(bndbox[3] - bndbox[1]) * (bndbox[2] - bndbox[0]) for bndbox in bndboxs],  dtype=torch.float32)
         target = {'boxes': bndboxs,
                   'labels': labels,
@@ -47,7 +47,7 @@ class RCnnDataset(Dataset):
     def _load_image(self, img_path: str):
         image = cv2.imread(img_path, cv2.IMREAD_COLOR)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image /= 255.0
+        image = image / 255.0
         return image
 
 
