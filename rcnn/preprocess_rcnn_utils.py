@@ -176,5 +176,5 @@ def resize_anno_params(bndboxs: list[list], old_img_size: tuple, target_size: in
         xmax = float(xmax * target_size / old_width)
         ymax = float(ymax * target_size / old_height)
 
-        resized_bndboxs.append((xmin, ymin, xmax, ymax))
+        resized_bndboxs.append([xmin, ymin, xmax, ymax])
     return resized_bndboxs, resized_size
