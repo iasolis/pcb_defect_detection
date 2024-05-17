@@ -11,7 +11,7 @@ from albumentations.pytorch import ToTensorV2
 
 
 class RCnnDataset(Dataset):
-    def __init__(self, root, image_paths, anno_paths):
+    def __init__(self, image_paths, anno_paths):
         self.image_paths = image_paths
         self.anno_paths = anno_paths
 
@@ -27,6 +27,7 @@ class RCnnDataset(Dataset):
         # bndboxs, img_size = resize_anno_params(bndboxs, img_size, 640)
 
         image = torch.tensor(image)
+        image = torch.permute(image, (2, 0, 1))
         bndboxs = torch.tensor(bndboxs)
         labels = torch.tensor(labels)
         areas = torch.tensor([(bndbox[3] - bndbox[1]) * (bndbox[2] - bndbox[0]) for bndbox in bndboxs])
