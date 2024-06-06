@@ -8,7 +8,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--task', required=True, default='detect')
     parser.add_argument('--mode', required=True, default='train')
-    parser.add_argument('--model', required=True, default='yolov8s.pt')
+    parser.add_argument('--model', required=True, default='yolov8n.pt')
     parser.add_argument('--imgsz', required=True, default=640)
     parser.add_argument('--data', required=True, default='datasets/data/data.yaml')
     parser.add_argument('--epochs', required=True, default=100)

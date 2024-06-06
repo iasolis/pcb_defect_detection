@@ -2,3 +2,6 @@ PyYAML==6.0.1
 pillow==10.3.0
 matplotlib==3.8.4
 ultralytics==8.2.11
+albumentations==1.4.7
+opencv-python==4.9.0.80
+numpy==1.26.4
