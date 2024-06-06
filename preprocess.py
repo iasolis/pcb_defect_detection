@@ -196,7 +196,7 @@ def reformat_bboxs_to_yolo_format(bboxs: list, old_img_size: tuple, target_size:
 
 
 def save_yolo_files(orig_img_paths: str, orig_anno_paths: str, save_img_dir: str, save_label_dir: str,
-                    target_img_size: int, aug_flag:bool=False) -> None:
+                    target_img_size: int, aug_flag: bool = False) -> None:
     """
     Функция сохранения всех получившихся файлов.
     Parameters
@@ -212,7 +212,8 @@ def save_yolo_files(orig_img_paths: str, orig_anno_paths: str, save_img_dir: str
     target_img_size:
         Размер изображения до которого будет производиться изменение размера
     """
-    for img_path, anno_path in tqdm(zip(orig_img_paths, orig_anno_paths)):
+
+    for img_path, anno_path in tqdm(zip(orig_img_paths, orig_anno_paths), total=len(orig_img_paths)):
         img_name = basename(img_path)
         img_save_path = save_img_dir + img_name
 
