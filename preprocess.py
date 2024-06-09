@@ -80,17 +80,20 @@ def divide_train_val_test(img_dir: str, anno_dir: str, subdirs: list, train_size
 
         number_of_train = int(len(img_paths) * train_size)
         for _ in range(number_of_train):
-            random_idx = random.randint(0, len(img_paths) - 1)
-            img_train_path = img_paths.pop(random_idx)
-            anno_train_path = anno_paths.pop(random_idx)
+            random_train_idx = random.randint(0, len(img_paths) - 1)
+            img_train_path = img_paths.pop(random_train_idx)
+            anno_train_path = anno_paths.pop(random_train_idx)
             img_train_paths.append(img_train_path)
             anno_train_paths.append(anno_train_path)
 
         img_val_paths.extend(img_paths)
         anno_val_paths.extend(anno_paths)
 
-        img_test_paths.extend(img_val_paths[:5])
-        anno_test_paths.extend(anno_val_paths[:5])
+        for i in range(3):
+            random_test_idx = random.randint(0, len(img_val_paths) - 1)
+            img_test_paths.append(img_val_paths.pop(random_test_idx))
+            anno_test_paths.append(anno_val_paths.pop(random_test_idx))
+
     return img_train_paths, img_val_paths, img_test_paths, anno_train_paths, anno_val_paths, anno_test_paths
 
 
