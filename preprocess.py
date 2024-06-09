@@ -74,16 +74,15 @@ def divide_train_val_test(img_dir: str, anno_dir: str, subdirs: list, train_size
         img_dir_path = img_dir + subdir
         anno_dir_path = anno_dir + subdir
 
-        img_paths = [img_dir_path + f for f in listdir(img_dir_path)]
-        anno_paths = [anno_dir_path + f for f in listdir(anno_dir_path)]
+        names = [splitext(basename(f))[0] for f in listdir(img_dir_path)]
+        img_paths = [img_dir_path + f + '.jpg' for f in names]
+        anno_paths = [anno_dir_path + f + '.xml'for f in names]
 
         number_of_train = int(len(img_paths) * train_size)
         for _ in range(number_of_train):
             random_idx = random.randint(0, len(img_paths) - 1)
-
             img_train_path = img_paths.pop(random_idx)
             anno_train_path = anno_paths.pop(random_idx)
-
             img_train_paths.append(img_train_path)
             anno_train_paths.append(anno_train_path)
 
@@ -223,7 +222,6 @@ def save_yolo_files(orig_img_paths: str, orig_anno_paths: str, save_img_dir: str
         img = load_img(img_path)
         resized_img = symmetrize_img(img, target_img_size)
         save_img(img_save_path, resized_img)
-
         names, bboxs, img_size = take_anno_params(anno_path)
         yolo_bboxs = reformat_bboxs_to_yolo_format(bboxs, img_size, target_img_size)
         save_label(label_save_path, yolo_bboxs, names)

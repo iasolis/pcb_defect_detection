@@ -1,4 +1,4 @@
-TARGET_SIZE: int = 640
+TARGET_SIZE: int = 1280
 
 # for colab
 ORIGINAL_DATA_DIR: str = '/content/drive/MyDrive/VKRM/pcb_defect_detection/original_data/'

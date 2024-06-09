@@ -65,7 +65,7 @@ def canny_operator(img_gray: np.array, threshold1: float, threshold2: float) -> 
     return image_canny
 
 
-def symmetrize_img(img: np.array, target_size: int = 640) -> np.array:
+def symmetrize_img(img: np.array, target_size: int = 1280) -> np.array:
     """
     Функция для изменения разрешения изображения
     Parameters
