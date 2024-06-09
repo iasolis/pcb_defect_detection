@@ -263,8 +263,8 @@ def main():
         make_train_data_structure(train_data_dirs)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--aug_flag', required=False, default=True)
-    parser.add_argument('--image_processing_flag', required=False, default=True)
+    parser.add_argument('--aug_flag', required=False, default=False)
+    parser.add_argument('--image_processing_flag', required=False, default=False)
     opt = parser.parse_args()
 
     img_dir = ORIGINAL_DATA_IMG_DIR
