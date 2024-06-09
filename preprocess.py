@@ -277,9 +277,9 @@ def main():
     train_val_test_paths = divide_train_val_test(img_dir, anno_dir, subdirs, train_size=0.8)
     img_train_paths, img_val_paths, img_test_paths, anno_train_paths, anno_val_paths, anno_test_paths = train_val_test_paths
 
-    save_yolo_files(img_train_paths, anno_train_paths, train_img_dir, train_anno_dir, TARGET_SIZE, opt.aug_flag, opt.image_processing_flag)
-    save_yolo_files(img_val_paths, anno_val_paths, VAL_IMG_DIR, VAL_ANNO_DIR, TARGET_SIZE, opt.aug_flag, opt.image_processing_flag)
-    save_yolo_files(img_test_paths, anno_test_paths, TEST_IMG_DIR, TEST_ANNO_DIR, TARGET_SIZE, opt.aug_flag, opt.image_processing_flag)
+    save_yolo_files(img_train_paths, anno_train_paths, train_img_dir, train_anno_dir, TARGET_SIZE, bool(opt.aug_flag), bool(opt.image_processing_flag))
+    save_yolo_files(img_val_paths, anno_val_paths, VAL_IMG_DIR, VAL_ANNO_DIR, TARGET_SIZE, bool(opt.aug_flag), bool(opt.image_processing_flag))
+    save_yolo_files(img_test_paths, anno_test_paths, TEST_IMG_DIR, TEST_ANNO_DIR, TARGET_SIZE, bool(opt.aug_flag), bool(opt.image_processing_flag))
     save_yolo_yaml()
 
 
