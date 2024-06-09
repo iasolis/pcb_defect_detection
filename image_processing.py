@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-
+from PIL import Image, ImageEnhance
 
 def check_images_in_different_color_spaces(image: np.ndarray) -> dict:
     """
@@ -82,3 +82,14 @@ def symmetrize_img(img: np.array, target_size: int = 640) -> np.array:
     img_size = (target_size, target_size)
     resized_img = cv2.resize(img, img_size, interpolation=cv2.INTER_AREA)
     return resized_img
+
+
+def image_process(img: np.array):
+    img = cv2.cvtColor(img, getattr(cv2, 'COLOR_BGR2GRAY'))
+    pill_image = Image.fromarray(img)
+    contrast_img = ImageEnhance.Contrast(pill_image).enhance(2)
+    brightness_img = ImageEnhance.Brightness(contrast_img).enhance(2)
+    img = np.asarray(brightness_img)
+    img = sobel_operator(img, 0.1, 0.1)
+    return img
+

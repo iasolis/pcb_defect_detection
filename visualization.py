@@ -1,3 +1,5 @@
+from preprocess import load_bbox, load_img
+
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
@@ -93,13 +95,7 @@ def show_prediction_result(img: np.array, orig_bboxes: list, pred_bboxes: list, 
 
 
 
-def load_bbox(anno_path):
-    bbox = []
-    with open(anno_path, 'r') as file:
-        for lines in file:
-            lines = list(map(float, lines.split()))[1:]
-            bbox.append(lines)
-    return np.array(bbox)
+
 
 
 def main():

@@ -2,6 +2,7 @@ from config import ORIGINAL_DATA_IMG_DIR, ORIGINAL_DATA_ANNO_DIR, ORIGINAL_DATA_
     DATA_DIR, TRAIN_IMG_DIR, TRAIN_ANNO_DIR, VAL_IMG_DIR, VAL_ANNO_DIR, TEST_IMG_DIR, TEST_ANNO_DIR, TARGET_SIZE
 from augmentation import augment_orig_data
 from image_processing import symmetrize_img
+from image_processing import image_process
 
 from os.path import exists, basename, splitext
 from os import makedirs, listdir
@@ -143,6 +144,13 @@ def load_img(image_path):
     img = np.asarray(img)
     return img
 
+def load_bbox(anno_path):
+    bbox = []
+    with open(anno_path, 'r') as file:
+        for lines in file:
+            lines = list(map(float, lines.split()))[1:]
+            bbox.append(lines)
+    return np.array(bbox)
 
 def save_img(img_path: str, img):
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
@@ -198,7 +206,7 @@ def reformat_bboxs_to_yolo_format(bboxs: list, old_img_size: tuple, target_size:
 
 
 def save_yolo_files(orig_img_paths: str, orig_anno_paths: str, save_img_dir: str, save_label_dir: str,
-                    target_img_size: int, aug_flag: bool = False) -> None:
+                    target_img_size: int, aug_flag: bool = False, image_processing_flag:bool = False ) -> None:
     """
     Функция сохранения всех получившихся файлов.
     Parameters
@@ -223,14 +231,23 @@ def save_yolo_files(orig_img_paths: str, orig_anno_paths: str, save_img_dir: str
         label_save_path = save_label_dir + label_name + '.txt'
 
         img = load_img(img_path)
-        resized_img = symmetrize_img(img, target_img_size)
-        save_img(img_save_path, resized_img)
+
         names, bboxs, img_size = take_anno_params(anno_path)
         yolo_bboxs = reformat_bboxs_to_yolo_format(bboxs, img_size, target_img_size)
+
+        if image_processing_flag:
+            processed_img = image_process(img)
+            resized_img = symmetrize_img(processed_img, target_img_size)
+            save_img(img_save_path, resized_img)
+        else:
+            resized_img = symmetrize_img(img, target_img_size)
+            save_img(img_save_path, resized_img)
         save_label(label_save_path, yolo_bboxs, names)
 
+
+
         if aug_flag:
-            aug_imgs, aug_bboxes, aug_names = augment_orig_data(img, yolo_bboxs, names)
+            aug_imgs, aug_bboxes, aug_names = augment_orig_data(processed_img, yolo_bboxs, names)
             for aug_img, aug_bbox, aug_name in zip(aug_imgs, aug_bboxes, aug_names):
                 aug_img_save_path = save_img_dir + aug_name + img_name
                 aug_label_save_path = save_label_dir + aug_name + label_name + '.txt'
@@ -246,8 +263,8 @@ def main():
         make_train_data_structure(train_data_dirs)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--aug_flag', required=False, default=False)
-    parser.add_argument('--image_processing_flag', required=False, default=False)
+    parser.add_argument('--aug_flag', required=False, default=True)
+    parser.add_argument('--image_processing_flag', required=False, default=True)
     opt = parser.parse_args()
 
     img_dir = ORIGINAL_DATA_IMG_DIR
@@ -260,9 +277,9 @@ def main():
     train_val_test_paths = divide_train_val_test(img_dir, anno_dir, subdirs, train_size=0.8)
     img_train_paths, img_val_paths, img_test_paths, anno_train_paths, anno_val_paths, anno_test_paths = train_val_test_paths
 
-    save_yolo_files(img_train_paths, anno_train_paths, train_img_dir, train_anno_dir, TARGET_SIZE, opt.aug_flag)
-    save_yolo_files(img_val_paths, anno_val_paths, VAL_IMG_DIR, VAL_ANNO_DIR, TARGET_SIZE, opt.aug_flag)
-    save_yolo_files(img_test_paths, anno_test_paths, TEST_IMG_DIR, TEST_ANNO_DIR, TARGET_SIZE, opt.aug_flag)
+    save_yolo_files(img_train_paths, anno_train_paths, train_img_dir, train_anno_dir, TARGET_SIZE, opt.aug_flag, opt.image_processing_flag)
+    save_yolo_files(img_val_paths, anno_val_paths, VAL_IMG_DIR, VAL_ANNO_DIR, TARGET_SIZE, opt.aug_flag, opt.image_processing_flag)
+    save_yolo_files(img_test_paths, anno_test_paths, TEST_IMG_DIR, TEST_ANNO_DIR, TARGET_SIZE, opt.aug_flag, opt.image_processing_flag)
     save_yolo_yaml()
 
 
