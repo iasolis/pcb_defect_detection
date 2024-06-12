@@ -236,18 +236,16 @@ def save_yolo_files(orig_img_paths: str, orig_anno_paths: str, save_img_dir: str
         yolo_bboxs = reformat_bboxs_to_yolo_format(bboxs, img_size, target_img_size)
 
         if image_processing_flag:
-            processed_img = image_process(img)
-            resized_img = symmetrize_img(processed_img, target_img_size)
+            img = image_process(img)
+            resized_img = symmetrize_img(img, target_img_size)
             save_img(img_save_path, resized_img)
         else:
             resized_img = symmetrize_img(img, target_img_size)
             save_img(img_save_path, resized_img)
         save_label(label_save_path, yolo_bboxs, names)
 
-
-
         if aug_flag:
-            aug_imgs, aug_bboxes, aug_names = augment_orig_data(processed_img, yolo_bboxs, names)
+            aug_imgs, aug_bboxes, aug_names = augment_orig_data(img, yolo_bboxs, names)
             for aug_img, aug_bbox, aug_name in zip(aug_imgs, aug_bboxes, aug_names):
                 aug_img_save_path = save_img_dir + aug_name + img_name
                 aug_label_save_path = save_label_dir + aug_name + label_name + '.txt'
@@ -263,8 +261,8 @@ def main():
         make_train_data_structure(train_data_dirs)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--aug_flag', required=False, default=False)
-    parser.add_argument('--image_processing_flag', required=False, default=False)
+    parser.add_argument('--aug_flag', required=False, default=True)
+    parser.add_argument('--image_processing_flag', required=False, default=True)
     opt = parser.parse_args()
 
     img_dir = ORIGINAL_DATA_IMG_DIR

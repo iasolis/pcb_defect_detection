@@ -44,7 +44,6 @@ def rotate_90(img, bboxes, labels):
 
 def augment_orig_data(img, bboxes, labels):
     aug_names = ('random_crop_aug_', 'vertical_mirror_aug_', 'hoizontal_mirror_aug_', 'rotate_90_aug_')
-    # aug_names = ('random_crop_aug_', 'vertical_mirror_aug_', 'hoizontal_mirror_aug_')
 
     random_cropped_img, random_cropped_bboxes = random_crop(img, bboxes, labels)
     vertical_flipped_img, vertical_flipped_bboxes = vertical_mirroring(img, bboxes, labels)
@@ -54,7 +53,5 @@ def augment_orig_data(img, bboxes, labels):
     auged_imgs = (random_cropped_img, vertical_flipped_img, horizontal_flipped_img, rotated_90_img)
     auged_bboxes = (random_cropped_bboxes, vertical_flipped_bboxes, horizontal_flipped_bboxes, rotated_90_bboxes)
 
-    auged_imgs = (random_cropped_img, vertical_flipped_img, horizontal_flipped_img)
-    auged_bboxes = (random_cropped_bboxes, vertical_flipped_bboxes, horizontal_flipped_bboxes)
     return auged_imgs, auged_bboxes, aug_names
 
