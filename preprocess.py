@@ -144,6 +144,7 @@ def load_img(image_path):
     img = np.asarray(img)
     return img
 
+
 def load_bbox(anno_path):
     bbox = []
     with open(anno_path, 'r') as file:
@@ -151,6 +152,7 @@ def load_bbox(anno_path):
             lines = list(map(float, lines.split()))[1:]
             bbox.append(lines)
     return np.array(bbox)
+
 
 def save_img(img_path: str, img):
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)

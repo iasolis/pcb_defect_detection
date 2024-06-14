@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from PIL import Image, ImageEnhance
 
+
 def check_images_in_different_color_spaces(image: np.ndarray) -> dict:
     """
     Функция проверки отображения исходного  изображения в различных цветовые пространствах и компановка их в словарь
